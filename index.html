@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DrainWatch · Las Piñas City</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="bar">
+  <h1>DrainWatch <small>Las Piñas City</small></h1>
+  <nav id="tabs" aria-label="Views">
+    <button data-view="map" class="on" aria-pressed="true">Map</button>
+    <button data-view="list" aria-pressed="false">Reports</button>
+    <button data-view="about" aria-pressed="false">About</button>
+  </nav>
+  <button id="admin-login" class="admin-login" type="button">Admin login</button>
+</header>
+<div id="stats" class="stats" hidden></div>
+<main>
+  <section id="view-map" aria-hidden="false">
+    <div id="map"></div>
+    <p class="map-message">See a drainage issue? Help make it visible.</p>
+    <p id="hint" class="hint" hidden>Tap the map where the drain is.</p>
+    <div class="legend" id="legend"></div>
+    <button id="report" class="primary fab">Report a drain +</button>
+  </section>
+  <section id="view-list" aria-hidden="true" hidden>
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+  <section id="view-about" aria-hidden="true" hidden>
+    <article class="about">
+      <p class="about-kicker">ABOUT DRAINWATCH</p>
+      <h2>Helping drainage concerns be seen.</h2>
+      <p class="about-lead">DrainWatch is a community reporting website for blocked, overflowing, or unsafe drains in Las Piñas City. It gives residents a simple way to pin an issue on a map and share what they see.</p>
+      <figure class="about-photo-placeholder">
+        <div class="about-photo-fallback" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 15-5-5L5 20"/></svg>
+          <span>Drainage photo unavailable</span>
+        </div>
+        <img id="group-photo" src="images/group-photo.jpg" alt="Leaves and debris collected beside a roadside drain">
+        <figcaption>Leaves and debris collected beside a roadside drain.</figcaption>
+      </figure>
+      <div class="about-sections">
+        <section class="about-panel">
+          <h3>Why it matters</h3>
+          <p>Leaves, litter, and other obstructions can slow water flow. When residents share where they notice a problem, the map can make local concerns easier to see and discuss.</p>
+          <p>Community reports are a source of information, not a guarantee of inspection or repair.</p>
+        </section>
+        <section class="about-panel">
+          <h3>How reports help</h3>
+          <p>Each report adds a location and description to the shared view. People can see whether an issue has been reported, verified, is in progress, or has been marked resolved.</p>
+          <p>To report an urgent hazard, contact the appropriate local authorities directly.</p>
+        </section>
+        <section class="about-panel">
+          <h3>What the statuses mean</h3>
+          <dl class="about-definitions">
+            <div><dt><img class="about-status-flag" src="flags/reported.svg" alt="" aria-hidden="true">Reported</dt><dd>A community member has submitted the issue.</dd></div>
+            <div><dt><img class="about-status-flag" src="flags/verified.svg" alt="" aria-hidden="true">Verified</dt><dd>An administrator has reviewed and confirmed the report.</dd></div>
+            <div><dt><img class="about-status-flag" src="flags/inprogress.svg" alt="" aria-hidden="true">In progress</dt><dd>Work to address the issue has been recorded as underway.</dd></div>
+            <div><dt><img class="about-status-flag" src="flags/resolved.svg" alt="" aria-hidden="true">Resolved</dt><dd>The issue has been marked as addressed.</dd></div>
+          </dl>
+        </section>
+        <section class="about-panel">
+          <h3>Classifying a drain</h3>
+          <dl class="about-definitions">
+            <div><dt>Partially blocked</dt><dd>Some water can still pass, but debris or buildup is restricting the drain.</dd></div>
+            <div><dt>Fully blocked</dt><dd>Water cannot pass through the drain because it is completely obstructed.</dd></div>
+            <div><dt>Overflowing</dt><dd>Water is spilling out of or backing up around the drain.</dd></div>
+          </dl>
+          <p>Use the separate <strong>Dangerous</strong> option for an open drain or a missing cover.</p>
+        </section>
+        <section class="about-panel">
+          <h3>Made by</h3>
+          <p>DrainWatch was created by Sebastian Bite, Hannah Torrevilla, and Bianca Arpon.</p>
+        </section>
+        <section class="about-panel about-demo">
+          <h3>About this demo</h3>
+          <p>DrainWatch is a demonstration of a possible community reporting experience, not an official Las Piñas City service. Reports and status updates in the demo should not be treated as official notices or a substitute for city reporting channels.</p>
+        </section>
+      </div>
+    </article>
+  </section>
+</main>
+<dialog id="onboarding" class="onboarding" aria-labelledby="onboarding-title">
+  <p class="about-kicker">GET STARTED</p>
+  <h2 id="onboarding-title">Report a drainage issue</h2>
+  <p class="onboarding-intro">A quick guide to sending your first report.</p>
+  <ol class="onboarding-steps">
+    <li><span>Tap <strong>Report a drain +</strong>.</span></li>
+    <li><span>Tap the map where the clogged drain is.</span></li>
+    <li><span>Choose how blocked it is and add details.</span></li>
+    <li><span>Tap <strong>Submit report</strong>.</span></li>
+  </ol>
+  <button id="dismiss-onboarding" class="primary onboarding-dismiss" type="button">Got it</button>
+</dialog>
+<dialog id="sheet"></dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+<p class="demo">Community demo</p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="data/data.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/map.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>

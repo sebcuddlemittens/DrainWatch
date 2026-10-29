@@ -1,0 +1,12 @@
+# Project backup
+drainwatch_v3.zip
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
